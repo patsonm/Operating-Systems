@@ -1,0 +1,139 @@
+PRE-SCRIPT INFO
+  Grading Script PID: 23812
+  Note: your smallsh will report a different PID when evaluating $$
+: BEGINNING TEST SCRIPT
+: 
+: --------------------
+: Using comment (5 points if only next prompt is displayed next)
+: : 
+: 
+: --------------------
+: ls (10 points for returning dir contents)
+: junk
+junk2
+mytestresults
+p3testscript
+smallsh
+smallsh.c
+: 
+: 
+: --------------------
+: ls out junk
+: : 
+: 
+: --------------------
+: cat junk (15 points for correctly returning contents of junk)
+: junk
+junk2
+mytestresults
+p3testscript
+smallsh
+smallsh.c
+: 
+: 
+: --------------------
+: wc in junk (15 points for returning correct numbers from wc)
+:  6  6 56
+: 
+: 
+: --------------------
+: wc in junk out junk2; cat junk2 (10 points for returning correct numbers from wc)
+: :  6  6 56
+: 
+: 
+: --------------------
+: test -f badfile (10 points for returning error value of 1, note extraneous &)
+: : exit value 1
+: 
+: 
+: --------------------
+: wc in badfile (10 points for returning text error)
+: Cannot open file 
+: No such file or directory
+: 
+: 
+: --------------------
+: badfile (10 points for returning text error)
+: badfile: no file or directy is found
+: 
+: 
+: --------------------
+: sleep 100 background (10 points for returning process ID of sleeper)
+: background pid is 23863
+: 
+: 
+: --------------------
+: pkill -signal SIGTERM sleep (10 points for pid of killed process, 10 points for signal)
+: (Ignore message about Operation Not Permitted)
+: pkill: killing pid 15140 failed: Operation not permitted
+pkill: killing pid 15213 failed: Operation not permitted
+pkill: killing pid 15494 failed: Operation not permitted
+pkill: killing pid 15675 failed: Operation not permitted
+pkill: killing pid 15907 failed: Operation not permitted
+pkill: killing pid 16147 failed: Operation not permitted
+pkill: killing pid 19734 failed: Operation not permitted
+pkill: killing pid 19777 failed: Operation not permitted
+pkill: killing pid 19821 failed: Operation not permitted
+pkill: killing pid 19864 failed: Operation not permitted
+pkill: killing pid 19907 failed: Operation not permitted
+pkill: killing pid 19954 failed: Operation not permitted
+pkill: killing pid 20012 failed: Operation not permitted
+pkill: killing pid 20066 failed: Operation not permitted
+pkill: killing pid 20110 failed: Operation not permitted
+pkill: killing pid 20153 failed: Operation not permitted
+pkill: killing pid 20199 failed: Operation not permitted
+pkill: killing pid 20245 failed: Operation not permitted
+pkill: killing pid 20299 failed: Operation not permitted
+pkill: killing pid 20354 failed: Operation not permitted
+pkill: killing pid 20397 failed: Operation not permitted
+pkill: killing pid 20462 failed: Operation not permitted
+pkill: killing pid 20531 failed: Operation not permitted
+pkill: killing pid 23685 failed: Operation not permitted
+Child 23863 terminated
+terminated by signal 108
+: 
+: 
+: --------------------
+: sleep 1 background (10 pts for pid of bg ps when done, 10 for exit value)
+: background pid is 23875
+: Child 23875 terminated
+terminated by signal 108
+: 
+: 
+: --------------------
+: pwd
+: /nfs/stak/users/patsonm/CS344/hw3
+: 
+: 
+: --------------------
+: cd
+: : 
+: 
+: --------------------
+: pwd (10 points for being in the HOME dir)
+: /nfs/stak/users/patsonm
+: 
+: 
+: --------------------
+: mkdir 23813
+: : 
+: 
+: --------------------
+: cd 23813
+: : 
+: 
+: --------------------
+: pwd (5 points for being in the newly created dir)
+: /nfs/stak/users/patsonm/23813
+: --------------------
+: background pid is 23909
+: Entering foreground-only mode (& is now ignored)
+: Testing foreground-only mode (20 points for entry
+Wed Nov 14 11:55:18 PST 2018
+Child 23909 terminated
+terminated by signal 108
+Child 23910 terminated
+terminated by signal 108
+: : Wed Nov 14 11:55:23 PST 2018
+: Exiting foreground-only mode
+: 
