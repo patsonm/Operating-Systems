@@ -1,0 +1,530 @@
+#!/bin/bash
+
+###Michael Patson
+###Oregon State CS 344
+###Assignemnt 1 Matrix
+
+
+#prints eror message stderr, nothng to stout and return val !-0 
+#if arge count is greater than 1 (gets two matrices)
+#if arg count is 1 but contains ono matrix
+#else prints ROW COLS, space seperate to stdout, nothng stdeer and returns 0
+
+
+dims()
+{
+	currLineNum=0
+	nCol=0
+	while read line
+	do 
+    currLineNum=$((currLineNum+1))
+    #echo $currLineNum #for testing only
+	done <"$datafilepath"
+    
+    #additional head command here http://www.linfo.org/head.html
+    #used to count numbers of argsand write to file matrixOne
+
+    nCol=$(head -n 1 $datafilepath | wc -w)
+    echo $currLineNum $nCol
+}
+
+#checks the dims of second array
+#needed this for add function
+dims2()
+{
+	currLineNum=0
+	nCol=0
+	while read line
+	do 
+    currLineNum=$((currLineNum+1))
+    #echo $currLineNum #for testing only
+	done <"$datafilepath2"
+    
+    nCol=$(head -n 1 $datafilepath2 | wc -w)
+    echo $currLineNum $nCol
+}
+
+
+transpose()
+{
+
+tempRow="temprowfile"
+tempCol="tempcolfile"
+
+
+# Append each number onto the end of a
+# temporary column file  by cuttingZ
+# specific columns using the i variable
+
+
+nCol=0
+nCol=$(head -n 1 $datafilepath | wc -w)
+##echo nCol is $nCol
+i=1
+	
+	while [ "$nCol" -ge "$i" ]; 
+  do
+     cut -f $i $datafilepath > $tempCol
+     cat $tempCol | tr -s '\n' '\t' > "$tempRow"
+     
+     rev "$tempRow" > "temp1"
+     cat "temp1" | cut -c 2-  >"temp2"
+     
+     #cut two from left, not exacly sure why, TRIAL AND ERROR
+     
+     rev "temp2" > $tempRow
+     cat $tempRow
+     
+     
+     i=$((i+1))
+done
+
+#remove tempfiles
+rm temp2
+rm temp1
+rm temprowfile
+rm tempcolfile
+
+}
+
+
+mean()
+{
+#first transpose so I can quickly sum rows
+
+ #This is the first attempt, trying to transpose
+
+tempRow="temprowfile"
+tempCol="tempcolfile"
+
+
+# Append each number onto the end of a
+# temporary column file  by cutting
+# specific columns using the i variable
+
+nCol=0
+nCol=$(head -n 1 $datafilepath | wc -w)
+##echo nCol is $nCol
+x=1
+
+
+#start same as transpose for rows
+	
+	while [ "$nCol" -ge "$x" ]; 
+  do
+     cut -f $x $datafilepath > $tempCol
+     cat $tempCol | tr -s '\n' '\t' > "$tempRow"
+     rev "$tempRow" > "temp1"
+     cat "temp1" | cut -c 2-  >"temp2" 
+     
+     rev "temp2" > $tempRow
+     
+     
+     while read i
+        do
+          sum=0
+          count=0
+          for num in $i
+          do
+            sum=$(($sum + $num))
+            count=$((count+1))
+
+          done
+          mean=$(((sum + (count/2)*( (sum>0)*2-1 )) / count))
+          
+           
+           
+           
+           
+           #below if statements solve training tab problem
+           if [ "$x" -lt "$nCol" ]
+            then
+                #echo x is: 
+                #echo $x
+                #echo mean added
+                #echo $mean
+                echo -ne "$mean\t" >>temp3
+            fi
+
+          if [ "$x" -eq "$nCol" ]
+            then
+                #echo Equals
+                ##echo x is 
+                #echo $x
+                #echo mean added
+                #echo $mean
+                echo -n $mean >>temp3
+                echo ''>>temp3
+            fi
+          
+            
+         done <$tempRow 
+
+    x=$((x+1))
+done
+
+
+cat temp3
+
+rm temp1
+rm temp2
+rm temp3
+rm temprowfile
+rm tempcolfile
+
+}
+
+add()
+{
+
+matrix1=$(dims $datafilepath)
+
+matrix2=$(dims2 $datafilepath2)
+
+
+#need this to figure out how to print out old matrix
+    
+nCol=$(head -n 1 $datafilepath2 | wc -w)
+colCount=0
+
+
+if [ "$matrix1" == "$matrix2" ]; then
+   #echo matrix are equal 
+
+
+while read -r lineA && read -r lineB <&3
+do
+  ###like lecture, make into a long row easier to add
+  echo "$lineA" | tr "\t" "\n" >> "lineA" 
+  echo "$lineB" | tr "\t" "\n" >> "lineB"
+  
+    
+done <$datafilepath 3<$datafilepath2
+
+
+while read A && read B <&3
+do
+
+#sum
+    sum=$((A + B))
+    
+   # echo A value is 
+   # echo $A
+   # echo B balue is
+   # echo $B
+    colCount=$((colCount+1))
+
+##these if statements 
+if [ "$colCount" -lt "$nCol" ]
+then
+#echo made it to sum1
+    echo -ne "$sum\t" >>temp10
+fi
+
+if [ "$colCount" -eq "$nCol" ]
+then
+    echo -ne "$sum\n" >>temp10
+    colCount=0
+fi
+
+done < lineA 3< lineB
+
+cat temp10
+rm temp10
+rm lineA
+rm lineB
+
+    
+    #if matrix is mismatched
+    #need both dims for this
+elif [ "$matrix1" != "$matrix2" ]; then
+    echo "Matrices are not the same size" 1>&2
+    exit 1
+fi
+}
+
+multiply()
+{
+#rules for multi.  col from a is equal to num rows on b. Final matrix size will be row from a and col from b
+
+#first get the dimensions
+mCol=$(head -n 1 $datafilepath | wc -w)
+#echo this is ncol
+
+mRow=0
+while read line
+	do 
+    mRow=$((mRow+1))
+    #echo $currLineNum #for testing only
+	done <"$datafilepath"
+
+nCol=$(head -n 1 $datafilepath2 | wc -w)
+#echo this is ncol
+
+nRow=0
+while read line
+	do 
+    nRow=$((nRow+1))
+    #echo $currLineNum #for testing only
+	done <"$datafilepath2"
+
+    
+    
+#echo this is m1
+#echo row
+#echo $mRow 
+#echo col
+#echo $mCol
+
+#echo this is n1
+#echo $nRow $nCol
+
+if [ "$mCol" -ne "$nRow" ]
+then
+echo "Matrices cannot be multiplied" 1>&2
+    exit 1
+
+fi
+
+###loop controls
+i=1
+
+
+
+while [ "$i" -le "$mRow" ]
+do
+
+	output1=$(head "-$i" "$datafilepath" | tail -1)
+    
+    j=1
+	while [ "$j" -le "$nCol" ]
+	do
+		output2=$(cut -f$j $datafilepath2 | tr '\n' '\t')
+		product=0
+        
+        ###loop controls
+        k=1
+        
+        while [ "$k" -le "$mCol" ]
+		do
+            #used to cut rows from temp files
+			x=$(cut -d'	' -f$k <<< "$output1") 
+			y=$(cut -d'	' -f$k <<< "$output2")
+            intermediateP=$((x * y))
+            product=$((product + intermediateP))
+			
+            ###loop controls
+            k=$((k+1))
+            
+		done
+			
+            #used to do row breaks
+			if [ $j == $nCol ]
+			then
+                echo -ne "$product\n" >>temp10
+			else
+				echo -ne "$product\t" >>temp10
+			fi
+            ###loop controls
+           j=$((j+1)) 
+	done
+    ###loop controls
+    i=$((i+1))
+done
+
+cat temp10
+rm temp10
+
+
+
+
+
+}
+
+
+#####starts here
+args=$#     # Number of args passed.
+
+if [ "$args" -eq 0 ]; then
+               echo "No arguments" 1>&2
+               exit 1
+fi
+
+
+###below if statements could be reduced GREATLY ran out of time
+
+#call dims
+if [ "$1" = "dims" ]; then
+            if [ "$args" -gt 2 ]; then #if too man args, error
+              echo "Too many arguments" 1>&2
+              exit 1
+            fi
+            
+            
+    
+    #thank the big guy you posted this
+    datafilepath="datafile$$"
+    if [ "$#" = "1" ]
+        then
+        cat > "$datafilepath"
+    elif [ "$#" = "2" ]; then
+                if [ ! -f "$2" ] || [ ! -r "$2" ]; then
+
+                  echo "Invalid Input File" 1>&2  ## stdout to stderr 
+                  exit 1
+                fi
+    datafilepath=$2
+    fi            
+    
+    #actual call
+    dims $datafilepath
+fi
+
+#call Transpose
+if [ "$1" = "transpose" ]; then
+            if [ "$args" -gt 2 ]; then #if too man args, error
+              echo "Too many arguments" 1>&2
+              exit 1
+              fi
+ 
+ 
+    #thank the big guy you posted this
+    datafilepath="datafile$$"
+    if [ "$#" = "1" ]
+        then
+        cat > "$datafilepath"
+    elif [ "$#" = "2" ]; then
+                if [ ! -f "$2" ] || [ ! -r "$2" ]; then
+
+                  echo "Invalid Input File" 1>&2  ## stdout to stderr 
+                  exit 1
+                fi
+    datafilepath=$2
+    fi            
+    
+    #actual call
+    transpose $datafilepath
+
+
+fi
+
+
+##call the mean
+if [ "$1" = "mean" ]; then
+            if [ "$args" -gt 2 ]; then #if too man args, error
+              echo "Too many arguments" 1>&2
+              exit 1
+              fi
+ 
+ 
+    #thank the big guy you posted this
+    datafilepath="datafile$$"
+    if [ "$#" = "1" ]
+        then
+        cat > "$datafilepath"
+    elif [ "$#" = "2" ]; then
+                if [ ! -f "$2" ]| [ ! -r "$2" ]; then
+
+                  echo "Invalid Input File" 1>&2  ## stdout to stderr 
+                  exit 1
+                fi
+    datafilepath=$2
+    fi            
+    
+    #actual call
+    mean $datafilepath
+
+
+fi
+
+
+#call the add function
+if [ "$1" = "add" ]; then
+    
+    
+    if [ "$args" -gt 3 ]; then #if too man args, error
+              echo "Too many arguments" 1>&2
+              exit 1
+              fi
+            
+     #thank the big guy you posted this
+  
+
+  if [ "$args" -lt 3 ]; then
+        echo "Too few arguments" 1>&2
+        exit 1
+    fi
+   
+   
+   if [ "$#" = "3" ]; then
+                if [ ! -f "$2" ] || [ ! -r "$2" ]; then
+
+                  echo "Invalid Input File 1" 1>&2  ## stdout to stderr 
+                  exit 1
+                fi
+                
+                if [ ! -f "$3" ] || [ ! -r "$3" ]; then
+
+                  echo "Invalid Input File 2" 1>&2  ## stdout to stderr 
+                  exit 1
+                fi
+    
+                
+    datafilepath=$2
+    datafilepath2=$3
+    fi   
+#call function
+    add $datafilepath $datafilepath2
+fi
+
+
+#call the multiplication function
+if [ "$1" = "multiply" ]; then
+    
+    
+    if [ "$args" -gt 3 ]; then #if too man args, error
+              echo "Too many arguments" 1>&2
+              exit 1
+              fi
+            
+     #thank the big guy you posted this
+    
+  if [ "$args" -lt 3 ]; then
+        echo "Too few arguments" 1>&2
+        exit 1
+    fi
+   
+   
+   if [ "$#" = "3" ]; then
+                if [ ! -f "$2" ] || [ ! -r "$2" ]; then
+
+                  echo "Invalid Input File 1" 1>&2  ## stdout to stderr 
+                  exit 1
+                fi
+                
+                if [ ! -f "$3" ] || [ ! -r "$3" ]; then
+
+                  echo "Invalid Input File 2" 1>&2  ## stdout to stderr 
+                  exit 1
+                fi
+    
+                
+    datafilepath=$2
+    datafilepath2=$3
+    fi   
+#call function
+    multiply $datafilepath $datafilepath2
+fi
+
+
+
+#if none of the prescripted results are called
+if [ "$1" != "multiply" ] && [ "$1" != "dims" ] && [ "$1" != "dims2" ] && [ "$1" != "mean" ] && [ "$1" != "add" ] && [ "$1" != "transpose" ] ; then
+
+echo "Invalid Input File 2" 1>&2  ## stdout to stderr 
+                  exit 1
+                fi
+
+
+
+

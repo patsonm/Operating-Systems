@@ -1,0 +1,71 @@
+Dims with 2 arguments should throw error (1pt):
+✅ Passed!
+Add with 0 arguments should throw error (1pt):
+⛔ Returned 0
+⛔ stderr is empty
+Multiply mismatched matrices should throw error (5pt):
+⛔ Returned 0
+⛔ stderr is empty
+Adding mismatched matrices should throw error (4pt):
+⛔ Returned 0
+⛔ stderr is empty
+Transposing undreadable file should throw error (2pt):
+⛔ Returned 0
+⛔ stdout is non-empty
+Dims on nonexistent file should throw error (1pt):
+✅ Passed!
+badcommand should throw error (1pt):
+⛔ Returned 0
+⛔ stderr is empty
+Piping m1 (5x6) into dims (3pt):
+⛔ Returned 1
+⛔ dimensions output is incorrect
+⛔ stderr is non-empty
+Piping m2 (6x7) into dims (3pt):
+⛔ Returned 1
+⛔ dimensions output is incorrect
+⛔ stderr is non-empty
+Piping m3 (3x8) into dims (3pt):
+⛔ Returned 1
+⛔ dimensions output is incorrect
+⛔ stderr is non-empty
+Passing m4 (8x5) to dims on stdin (3pt):
+✅ Passed!
+Passing m1 (5x6) to dims on stdin (3pt):
+✅ Passed!
+Passing m2 (6x7) to dims on stdin (3pt):
+✅ Passed!
+Transposing hardcoded matrix (10pt):
+⛔ Transposed matrix does not match known result
+Transpose involution test on m3 (5pt):
+⛔ Transpose is not involutory
+Transpose involution test on m4 (5pt):
+⛔ Transpose is not involutory
+Transpose involution test on m5 (5pt):
+⛔ Transpose is not involutory
+Mean on hardcoded matrix (15pt):
+⛔ Output result does not match known result
+Mean on 5x10 zero matrix (2pt):
+⛔ Output result does not match known result
+Mean on 5x10 all ones matrix (5pt):
+⛔ Output result does not match known result
+Mean on 10x10 identity matrix (5pt):
+⛔ Output result does not match known result
+0 + 0 == 0? (2pt):
+⛔ Output result does not match known result
+X + 0 == X? (5pt):
+⛔ Output result does not match known result
+0 + X == X? (5pt):
+⛔ Output result does not match known result
+A + B == B + A? (1pt):
+✅ Passed!
+(harcoded) A + B == C? (15pt):
+⛔ Output result does not match known result
+I * M == M? (5pt):
+⛔ Output result does not match known result
+M * I == M? (5pt):
+⛔ Output result does not match known result
+0 * M == 0? (5pt):
+⛔ Output result does not match known result
+(hardcoded) A * B == C? (20pt):
+⛔ Output result does not match known result

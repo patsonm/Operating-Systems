@@ -1,0 +1,25 @@
+##set up loop within loop
+for ((i=1; i<="$mRow"; i++))
+do
+	f1=$(head "-$i" "$datafilepath" | tail -1)
+	# Move index through column count in file 2.
+	for ((z=1; z<="$nCol"; z++))
+	do
+		f2=$(cut -f$z $datafilepath2 | tr '\n' '\t') # Cut column of file 2
+		product=0 # Default value to zero when moving to a new row/col.
+		# Move through col of file 1
+		for ((j=1; j<="$mCol"; j++))
+		do
+			x=$(cut -d'	' -f$j <<< "$f1") # Get element form file 1.
+			y=$(cut -d'	' -f$j <<< "$f2") # Get element from file 2.
+			let "product+=x*y" # Get the product of x and y, store value in variable product.
+		done
+			# If end of a col2 or not.
+			if [ $z == $nCol ]
+			then
+				printf "%d\n" $product
+			else
+				printf "%d\t" $product
+			fi
+	done
+done
